@@ -1,48 +1,34 @@
-// src/controllers/auth.controller.js
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const { AppDataSource } = require("../config/ormconfig");
+// /controllers/authController.js
+const userModel = require('../models/userModel');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-const userRepo = AppDataSource.getRepository("User");
+const JWT_SECRET = process.env.JWT_SECRET;
 
-const registerUser = async (req, res) => {
-  const { name, email, password, phone, gender } = req.body;
-
+exports.register = async (req, res) => {
   try {
-    const existing = await userRepo.findOneBy({ email });
-    if (existing) return res.status(400).json({ success: false, message: "User already exists" });
-
+    const { username, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = userRepo.create({ name, email, password: hashedPassword, phone, gender });
-    await userRepo.save(user);
-
-    res.status(201).json({ success: true, message: "User registered successfully" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Registration failed", error: err.message });
+    const result = await userModel.createUser(username, email, hashedPassword);
+    res.status(201).json({ success: true, message: "User registered successfully!" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Registration failed", error });
   }
 };
 
-const loginUser = async (req, res) => {
-  const { email, password } = req.body;
-
+exports.login = async (req, res) => {
   try {
-    const user = await userRepo.findOneBy({ email });
-    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    const { email, password } = req.body;
+    const user = await userModel.getUserByEmail(email);
+
+    if (!user) return res.status(400).json({ success: false, message: "Invalid email or password" });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ success: false, message: "Invalid credentials" });
+    if (!isMatch) return res.status(400).json({ success: false, message: "Invalid email or password" });
 
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
-
+    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: "1h" });
     res.json({ success: true, message: "Login successful", token });
-  } catch (err) {
-    res.status(500).json({ success: false, message: "Login failed", error: err.message });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Login failed", error });
   }
 };
-
-module.exports = { registerUser, loginUser };
