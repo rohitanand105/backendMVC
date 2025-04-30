@@ -1,30 +1,47 @@
-// src/entities/User.js
 const { EntitySchema } = require("typeorm");
 
 module.exports = new EntitySchema({
   name: "User",
-  tableName: "user",
+  tableName: "users",
   columns: {
-    id: {
+    userId: {
       primary: true,
-      type: "int",
-      generated: true,
+      type: "uuid",
+      generated: "uuid"
     },
-    name: {
+    firstName: {
       type: "varchar",
+      nullable: false
+    },
+    lastName: {
+      type: "varchar",
+      nullable: false
     },
     email: {
       type: "varchar",
       unique: true,
+      nullable: false
     },
-    password: {
+    phoneNumber: {
       type: "varchar",
+      nullable: true
     },
-    phone: {
+    aadharCard: {
       type: "varchar",
+      unique: true,
+      nullable: true
     },
-    gender: {
-      type: "varchar",
+    age: {
+      type: "int",
+      nullable: true
     },
-  },
+    dob: {
+      type: "date",
+      nullable: true
+    },
+    address: {
+      type: "text",
+      nullable: true
+    },
+  }
 });
