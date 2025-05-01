@@ -43,5 +43,19 @@ module.exports = new EntitySchema({
       type: "text",
       nullable: true
     },
+
+    empCode: {
+      type: "varchar",
+      unique: true,
+      nullable: true
+    },
+    createdAt: {
+      type: "timestamp",
+      createDate: true
+    },
+    updatedAt: {
+      type: "timestamp",
+      updateDate: true
+    }
   }
 });

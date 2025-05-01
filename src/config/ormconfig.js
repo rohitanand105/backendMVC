@@ -9,7 +9,7 @@ const AppDataSource = new DataSource({
   username: "root",
   password: "Rohit@1998",
   database: "ats",
-  synchronize: true,
+  synchronize: false,
   logging: false,
   entities: [User],
 });
