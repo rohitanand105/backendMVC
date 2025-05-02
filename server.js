@@ -13,6 +13,8 @@ const authRoutes = require('./src/routes/authRoutes');
 const employeeRoutes = require('./src/routes/employeeRoutes');
 const mnprRoutes = require('./src/routes/mnprRoutes');
 const userRoutes = require('./src/routes/userRoutes');
+const accountRoutes = require('./src/routes/accountRoutes');
+
 
 const app = express();
 
@@ -40,6 +42,8 @@ createConnection({
   app.use('/api/employee', employeeRoutes);
   app.use('/api/mnpr', mnprRoutes);
   app.use("/api", userRoutes);
+  app.use('/api/accounts', accountRoutes);
+
 
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => console.log(`✅ Server is running on port ${PORT}`));
