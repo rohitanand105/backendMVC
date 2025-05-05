@@ -41,7 +41,7 @@ createConnection({
   app.use('/api/auth', authRoutes);
   app.use('/api/employee', employeeRoutes);
   app.use('/api/mnpr', mnprRoutes);
-  app.use("/api", userRoutes);
+  app.use("/api/user", userRoutes);
   app.use('/api/accounts', accountRoutes);
 
 
